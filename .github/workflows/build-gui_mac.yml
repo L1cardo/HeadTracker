@@ -34,11 +34,10 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
         with:
-          submodules: recursive
           fetch-depth: 0
 
       - name: Install Qt
-        uses: jurplel/install-qt-action@v3
+        uses: jurplel/install-qt-action@v4
         with:
           aqtversion: '==3.1.*'
           version: '6.4.1'
