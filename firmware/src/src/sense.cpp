@@ -1016,7 +1016,7 @@ void sensor_Thread()
     mpu_get_accel_sens(&ascale);
     tacc[0] = (float)_accel[0] / (float)ascale;
     tacc[1] = (float)_accel[1] / (float)ascale;
-    tacc[2] = -1.0f * (float)_accel[2] / (float)ascale;
+    tacc[2] = (float)_accel[2] / (float)ascale - 1.0f;
     if (!mpu_get_gyro_reg(_gyro, &timestamp)) gyrValid = true;
     float gscale = 1.0f;
     mpu_get_gyro_sens(&gscale);
