@@ -50,36 +50,6 @@ jobs:
         run: |
           cd /root/zephyr-sdk
           ./setup.sh -c
-      - name: Build Firmware Arduino Nano 33 BLE (Sense)
-        run: |
-          cd /src/firmware/src
-          west build -p -b arduino_nano_33_ble
-          cp ./build/zephyr/*.bin build_bins/
-      - name: Build Firmware Arduino Nano 33 BLE (Sense) Rev 2
-        run: |
-          cd /src/firmware/src
-          west build -p -b arduino_nano_33_ble -- -DBOARD_REV2=y
-          cp ./build/zephyr/*.bin build_bins/
-      - name: Build Firmware XIAO NRF52840 Sense
-        run: |
-          cd /src/firmware/src
-          west build -p -b xiao_ble/nrf52840/sense
-          cp ./build/zephyr/*.uf2 build_bins/
-      - name: Build Firmware XIAO NRF52840
-        run: |
-          cd /src/firmware/src
-          west build -p -b xiao_ble/nrf52840
-          cp ./build/zephyr/*.uf2 build_bins/
-      - name: Build Firmware ESP32C3 DevkitM
-        run: |
-          cd /src/firmware/src
-          west build -p -b esp32c3_devkitm
-          cp ./build/zephyr/*.bin build_bins/
-      - name: Build Firmware M5StickC Plus
-        run: |
-          cd /src/firmware/src
-          west build -p -b m5stickc_plus/esp32/procpu
-          cp ./build/zephyr/*.bin build_bins/
       - name: Build Firmware DTQSYS Ht
         run: |
           cd /src/firmware/src

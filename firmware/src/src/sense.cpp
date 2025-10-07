@@ -1162,7 +1162,16 @@ void sensor_Thread()
       // Period Between Samples
       float delttime = madgwick.deltatUpdate();
 
-      madgwick.update(gyrx * DEG_TO_RAD, gyry * DEG_TO_RAD, gyrz * DEG_TO_RAD, accx, accy, accz,
+      // Fix acceleration data for Madgwick algorithm
+      float madgwick_accx = accx;
+      float madgwick_accy = accy;
+      float madgwick_accz = accz;
+
+        // Compensate for licardo_ht board orientation where Z-axis reads 1g when level
+      madgwick_accz -= 1.0f;  // Remove gravity component from Z-axis
+
+      madgwick.update(gyrx * DEG_TO_RAD, gyry * DEG_TO_RAD, gyrz * DEG_TO_RAD,
+                      madgwick_accx, madgwick_accy, madgwick_accz,
                       magx, magy, magz, delttime);
       roll = madgwick.getPitch();
       tilt = madgwick.getRoll();
