@@ -44,19 +44,16 @@ void CalibrateBLE::setNextAccStep()
         ui->ledZMax->setState(true);
         ui->ledZMin->setBlink(true);
 
-        if(_currentAccel[2] < 0)
-            _accInverted[2] = true;
-
-        _accFirst = _currentAccel[2];        
+        // Z轴朝上时读到负值(-1g)是正常的物理现象，不需要反转
+        _accFirst = _currentAccel[2];
         accStep++;
         break;
     case ZM:
         ui->ledZMin->setBlink(false);
         ui->ledZMin->setState(true);
         ui->ledYMax->setBlink(true);
-        _accOff[2] = fabs(_accFirst + _currentAccel[2]) / 2.0f;
-        if(_accInverted[2])
-            _accOff[2] *= -1.0f;
+        // 正确的Z轴偏移计算：不使用fabs，不反转
+        _accOff[2] = (_accFirst + _currentAccel[2]) / 2.0f;
         qDebug() << "OFFSET " << _accOff[2];
         accStep++;
         break;
