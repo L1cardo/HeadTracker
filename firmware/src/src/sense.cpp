@@ -1138,22 +1138,34 @@ void sensor_Thread()
         aacc[0] += accx;
         aacc[1] += accy;
         aacc[2] += accz;
-        aacc[0] /= 2;
-        aacc[1] /= 2;
-        aacc[2] /= 2;
         amag[0] += magx;
         amag[1] += magy;
         amag[2] += magz;
-        amag[0] /= 2;
-        amag[1] /= 2;
-        amag[2] /= 2;
       }
 
       // Got the averaged values, apply the initial orientation.
     } else if (madgreads == MADGSTART_SAMPLES - 1) {
-      LOG_INF("Initial Orientation Set");
-      // Pass it averaged values
-      madgwick.begin(aacc[0], aacc[1], aacc[2], amag[0], amag[1], amag[2]);
+      if (madgsensbits == MADGINIT_READY) {
+        madgsensbits = 0;
+        madgreads++;
+        aacc[0] += accx;
+        aacc[1] += accy;
+        aacc[2] += accz;
+        amag[0] += magx;
+        amag[1] += magy;
+        amag[2] += magz;
+
+        aacc[0] /= (float)MADGSTART_SAMPLES;
+        aacc[1] /= (float)MADGSTART_SAMPLES;
+        aacc[2] /= (float)MADGSTART_SAMPLES;
+        amag[0] /= (float)MADGSTART_SAMPLES;
+        amag[1] /= (float)MADGSTART_SAMPLES;
+        amag[2] /= (float)MADGSTART_SAMPLES;
+
+        LOG_INF("Initial Orientation Set: AccAvgZ=%f", (double)aacc[2]);
+        // Pass it averaged values
+        madgwick.begin(aacc[0], aacc[1], aacc[2], amag[0], amag[1], amag[2]);
+      }
       madgreads = MADGSTART_SAMPLES;
     }
 
@@ -1380,11 +1392,13 @@ void buildAuxData()
   auxdata[TrackerSettings::AUX_GYRX] = (gyrx / 1000) * pwmrange + TrackerSettings::PPM_CENTER;
   auxdata[TrackerSettings::AUX_GYRY] = (gyry / 1000) * pwmrange + TrackerSettings::PPM_CENTER;
   auxdata[TrackerSettings::AUX_GYRZ] = (gyrz / 1000) * pwmrange + TrackerSettings::PPM_CENTER;
-  auxdata[TrackerSettings::AUX_ACCELX] = (accx / 2.0f) * pwmrange + TrackerSettings::PPM_CENTER;
-  auxdata[TrackerSettings::AUX_ACCELY] = (accy / 2.0f) * pwmrange + TrackerSettings::PPM_CENTER;
+  auxdata[TrackerSettings::AUX_ACCELX] =
+      ((accx - aacc[0]) / 2.0f) * pwmrange + TrackerSettings::PPM_CENTER;
+  auxdata[TrackerSettings::AUX_ACCELY] =
+      ((accy - aacc[1]) / 2.0f) * pwmrange + TrackerSettings::PPM_CENTER;
   auxdata[TrackerSettings::AUX_ACCELZ] = (accz / 2.0f) * pwmrange + TrackerSettings::PPM_CENTER;
   auxdata[TrackerSettings::AUX_ACCELZO] =
-      ((accz - 1.0f) / 2.0f) * pwmrange + TrackerSettings::PPM_CENTER;
+      ((accz - aacc[2]) / 2.0f) * pwmrange + TrackerSettings::PPM_CENTER;
   auxdata[TrackerSettings::BT_RSSI] =
       static_cast<float>(BTGetRSSI()) / 127.0f * pwmrange + TrackerSettings::MIN_PWM;
 }

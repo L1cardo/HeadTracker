@@ -317,6 +317,15 @@ void Madgwick::align(float ax, float ay, float az, float bx, float by, float bz)
 {
   float va, vx, vy, vz;  // rotation angle and vector
   cross(ax, ay, az, bx, by, bz, vx, vy, vz);
+
+  float d2 = dot(vx, vy, vz, vx, vy, vz);
+  if (d2 < 0.000001f) {
+    // Vectors are already aligned or opposite.
+    // If they are opposite, we should handle 180 deg rotation, but for initial alignment
+    // we assume we are roughly in the right orientation.
+    return;
+  }
+
   norm(ax, ay, az);
   norm(bx, by, bz);
   norm(vx, vy, vz);
@@ -324,8 +333,8 @@ void Madgwick::align(float ax, float ay, float az, float bx, float by, float bz)
   float a2 = cos(va / 2.0f);
   float b2 = vx * sin(va / 2.0f);
   float c2 = vy * sin(va / 2.0f);
-  float d2 = vz * sin(va / 2.0f);
-  combine(a2, b2, c2, d2);
+  float d2_q = vz * sin(va / 2.0f);
+  combine(a2, b2, c2, d2_q);
 }
 
 // Combines current rotation with new (changes quaternion!)
