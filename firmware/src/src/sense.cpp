@@ -1382,7 +1382,7 @@ void buildAuxData()
   auxdata[TrackerSettings::AUX_GYRZ] = (gyrz / 1000) * pwmrange + TrackerSettings::PPM_CENTER;
   auxdata[TrackerSettings::AUX_ACCELX] = (accx / 2.0f) * pwmrange + TrackerSettings::PPM_CENTER;
   auxdata[TrackerSettings::AUX_ACCELY] = (accy / 2.0f) * pwmrange + TrackerSettings::PPM_CENTER;
-  auxdata[TrackerSettings::AUX_ACCELZ] = (accz / 1.0f) * pwmrange + TrackerSettings::PPM_CENTER;
+  auxdata[TrackerSettings::AUX_ACCELZ] = (accz / 2.0f) * pwmrange + TrackerSettings::PPM_CENTER;
   auxdata[TrackerSettings::AUX_ACCELZO] =
       ((accz - 1.0f) / 2.0f) * pwmrange + TrackerSettings::PPM_CENTER;
   auxdata[TrackerSettings::BT_RSSI] =
